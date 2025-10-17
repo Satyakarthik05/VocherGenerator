@@ -1,8 +1,10 @@
 @import 'tailwindcss';
 /* @import 'tw-animate-css'; */
 
+/* 🌙 Dark mode variant setup */
 @custom-variant dark (&:is(.dark *));
 
+/* 🎨 Root theme variables */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -39,6 +41,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* 🌑 Dark mode colors */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -74,6 +77,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* 🧩 Tailwind theme variable mapping */
 @theme inline {
   --font-sans: 'Geist', 'Geist Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
@@ -115,11 +119,44 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* 🧠 Base Tailwind resets */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* 🖨️ PRINT STYLING (for vouchers, A4, black background fix) */
+@media print {
+  @page {
+    size: A4;
+    margin: 0; /* Remove printer margins */
+  }
+
+  body {
+    margin: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    background: white !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Remove hyperlinks and default underlines in print */
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+  /* Each voucher takes a full A4 page */
+  .voucher {
+    page-break-after: always;
   }
 }
