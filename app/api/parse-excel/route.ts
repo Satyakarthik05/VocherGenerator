@@ -13,19 +13,28 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = await file.arrayBuffer()
-    const workbook = XLSX.read(buffer, { type: "array" })
+    const workbook = XLSX.read(buffer, { type: "array", cellDates: false })
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-    const data = XLSX.utils.sheet_to_json<ExcelRow>(worksheet)
+    const data = XLSX.utils.sheet_to_json<ExcelRow>(worksheet, { raw: true })
+
     console.log("Excel Headers:", Object.keys(data[0]))
+    console.log("Sample Rows (first 3):", data.slice(0, 3))
 
     const vouchers: VoucherData[] = data.map((row, index) => {
       const indusId = row["Indus ID"] || row["IndusID"] || ""
       const remarks = row.Remarks || ""
       const combinedRemarks = indusId ? `${indusId} - ${remarks}` : remarks
 
+      // ✅ Convert Excel numeric date serial to DD-MM-YYYY
+      const dateValue = row.Date
+      const formattedDate =
+        typeof dateValue === "number"
+          ? excelSerialToDate(dateValue)
+          : String(dateValue)
+
       return {
         voucherNo: String(Number.parseInt(startingVoucherNo) + index),
-        date: formatDate(row.Date),
+        date: formattedDate,
         paidTo: row["Paid to "] || row["Paid to"] || "",
         remarks: combinedRemarks,
         amount: String(row.Amount),
@@ -40,14 +49,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString)
-    const day = String(date.getDate()).padStart(2, "0")
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const year = String(date.getFullYear()).slice(-2)
-    return `${day}-${month}-${year}`
-  } catch {
-    return dateString
-  }
+/**
+ * ✅ Converts Excel date serial number to "DD-MM-YYYY"
+ */
+function excelSerialToDate(serial: number): string {
+  const excelEpoch = new Date(1900, 0, serial - 1)
+  const day = String(excelEpoch.getDate()).padStart(2, "0")
+  const month = String(excelEpoch.getMonth() + 1).padStart(2, "0")
+  const year = excelEpoch.getFullYear()
+  return `${day}-${month}-${year}`
 }

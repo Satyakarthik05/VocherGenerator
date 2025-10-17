@@ -70,47 +70,49 @@ export default function VoucherTemplate({ voucher }: VoucherTemplateProps) {
       </div>
 
       {/* ✅ Cash / Cheque Details & On: Rupees – All inline with underline */}
-      <div
+     <div
   style={{
-    marginBottom: "16px",
+    marginBottom: "12px",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    fontSize: "clamp(12px, 1.4vw, 14px)", // ✅ Auto-resize font between 12px to 14px
+    fontSize: "clamp(9px, 1vw, 12px)", // ⬇ smaller font range (9–11px)
+    lineHeight: "1.2", // tighten vertical space
   }}
 >
-  <strong>By Cash/Cheque/DD No :</strong>{" "}
+  <strong style={{ fontWeight: 600 }}>By Cash/Cheque/DD No :</strong>{" "}
   <span
     style={{
       borderBottom: "1px solid black",
       display: "inline-block",
-      width: "40px",
-      marginRight: "8px",
+      width: "35px",
+      marginRight: "6px",
     }}
   >
     Cash
   </span>
-  <strong style={{ marginRight: "4px" }}>Date :</strong>{" "}
+  <strong style={{ marginRight: "4px", fontWeight: 600 }}>Date :</strong>{" "}
   <span
     style={{
       borderBottom: "1px solid black",
       display: "inline-block",
-      width: "60px",
-      marginRight: "8px",
+      width: "55px",
+      marginRight: "6px",
     }}
   >
     {voucher.date}
   </span>
-  <strong style={{ marginRight: "4px" }}>On: Rupees </strong>
+  <strong style={{ marginRight: "2px", fontWeight: 600 ,marginLeft:3}}>On: Rupees</strong>{" "}
   <span
     style={{
       borderBottom: "1px solid black",
       display: "inline-block",
-      width: "250px",
+      width: "200px", // ⬇ slightly narrower to fit better
     }}
   >
     {voucher.words}
   </span>
 </div>
+
 
 
       {/* Amount Row */}
